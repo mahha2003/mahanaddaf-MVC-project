@@ -31,7 +31,7 @@ namespace MvcTodoApp.Controllers
         {
             if (!string.IsNullOrEmpty(title))
             {
-                int newId = tasks.Max(t => t.Id) + 1;
+                int newId = tasks.Any() ? tasks.Max(t => t.Id) + 1 : 1;
                 var newTask = new TaskItem { Id = newId, Title = title, IsComplete = false };
                 tasks.Add(newTask);
             }
@@ -47,6 +47,22 @@ namespace MvcTodoApp.Controllers
             var task = tasks.FirstOrDefault(t => t.Id == id);
             if (task != null)
                 task.IsComplete = true;
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// تعديل عنوان المهمة.
+        /// </summary>
+        [HttpPost]
+        public IActionResult EditTask(int id, string newTitle)
+        {
+            var task = tasks.FirstOrDefault(t => t.Id == id);
+
+            if (task != null && !string.IsNullOrWhiteSpace(newTitle))
+            {
+                task.Title = newTitle;
+            }
+
             return RedirectToAction("Index");
         }
     }
